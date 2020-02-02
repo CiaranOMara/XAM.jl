@@ -5,9 +5,9 @@
 
 High-throughput sequencing (HTS) technologies generate a large amount of data in the form of a large number of nucleotide sequencing reads.
 One of the most common tasks in bioinformatics is to align these reads against known reference genomes, chromosomes, or contigs.
-BioAlignments provides several data formats commonly used for this kind of task.
+`XAM` provides several data formats commonly used for this kind of task.
 
-BioAlignments offers high-performance tools for SAM and BAM file formats, which are the most popular file formats.
+The `XAM` package offers high-performance tools for SAM and BAM file formats, which are the most popular file formats.
 
 If you have questions about the SAM and BAM formats or any of the terminology used when discussing these formats, see the published [specification][samtools-spec], which is maintained by the [samtools group][samtools].
 
@@ -37,7 +37,7 @@ A BAM file stores this same information but in a binary and compressible format 
 A typical script iterating over all records in a file looks like below:
 
 ```julia
-using BioAlignments
+using XAM
 
 # Open a BAM file.
 reader = open(BAM.Reader, "data.bam")
@@ -110,7 +110,7 @@ In the above we can see there were 7 sequences in the reference: 5 chromosomes, 
 
 ## SAM and BAM Records
 
-BioAlignments supports the following accessors for `SAM.Record` types.
+The `XAM` package supports the following accessors for `SAM.Record` types.
 
 ```@docs
 XAM.SAM.flag
@@ -134,7 +134,7 @@ XAM.SAM.quality
 XAM.SAM.auxdata
 ```
 
-BioAlignments supports the following accessors for `BAM.Record` types.
+The `XAM` package supports the following accessors for `BAM.Record` types.
 
 ```@docs
 XAM.BAM.flag
@@ -200,7 +200,7 @@ end
 
 ## Getting records in a range
 
-BioAlignments supports the BAI index to fetch records in a specific range from a BAM file.
+The `XAM` package supports the BAI index to fetch records in a specific range from a BAM file.
 [Samtools][samtools] provides `index` subcommand to create an index file (.bai) from a sorted BAM file.
 
 ```console
@@ -209,7 +209,7 @@ $ ls SRR1238088.sort.bam*
 SRR1238088.sort.bam     SRR1238088.sort.bam.bai
 ```
 
-`eachoverlap(reader, chrom, range)` returns an iterator of BAM records overlapping the query interval:
+The method `eachoverlap(reader, chrom, range)` returns an iterator of BAM records overlapping the query interval:
 
 ```julia
 reader = open(BAM.Reader, "SRR1238088.sort.bam", index="SRR1238088.sort.bam.bai")
@@ -222,14 +222,15 @@ close(reader)
 
 ## Getting records overlapping genomic features
 
-`eachoverlap` also accepts the `Interval` type defined in [GenomicFeatures.jl][genomicfeatures].
+The `eachoverlap` method also accepts the `Interval` type defined in [GenomicFeatures.jl][genomicfeatures].
 
 This allows you to do things like first read in the genomic features from a GFF3 file, and then for each feature, iterate over all the BAM records that overlap with that feature.
 
 ```julia
 # Load GFF3 module.
 using GenomicFeatures
-using BioAlignments
+using XAM
+using GFF3
 
 # Load genomic features from a GFF3 file.
 features = open(collect, GFF3.Reader, "TAIR10_GFF3_genes.gff")
